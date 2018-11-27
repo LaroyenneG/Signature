@@ -1,5 +1,7 @@
 #Sujet 2
+
 ###Objectif :
+
 Vous devez réaliser une classe SignatureTools permettant de vérifier la signature de fichiers à partir de clés lues depuis un keystore.
 Cette classe présente les méthodes suivantes :
 * public SignatureTools(String file, char[] passwd, String type, String DN) qui construit une instance de la classe et initialise l'unique attribut dont elle doit disposer. Cet attribut doit être nommé pubKeys et de type ArrayList<PublicKey>. Il doit contenir toutes les clés publiques, issues des certificats présents dans le keystore stocké dans le fichier file, pour lesquels le Distinguished Name du sujet correspond à celui donné dans le paramètre DN. Ces certificats peuvent se trouver aussi bien dans des entrées de type clé que dans des entrées de type certificat. Le type du keystore est donné dans le paramètre type. Le mot de passe servant à protéger le keystore est donné dans le paramètre passwd.
