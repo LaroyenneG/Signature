@@ -1,6 +1,6 @@
-#Sujet 2
+# Sujet 2
 
-###Objectif :
+### Objectif :
 
 Vous devez réaliser une classe SignatureTools permettant de vérifier la signature de fichiers à partir de clés lues depuis un keystore.
 Cette classe présente les méthodes suivantes :
