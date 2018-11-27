@@ -1,8 +1,12 @@
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SignatureTools {
@@ -19,26 +23,30 @@ public class SignatureTools {
         this.password = password;
         this.type = type;
         this.distinguishedName = distinguishedName;
-        publicKeys = null;
+        publicKeys = new ArrayList<>();
+    }
+
+    public static void main(String[] args) {
+        System.out.println("hello");
+    }
+
+    public boolean verify(String fileName, byte[] signature) {
+        return true;
     }
 
     public void readFile() {
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
 
+            FileInputStream stream = new FileInputStream(file);
 
-            reader.close();
-        } catch (IOException e) {
+            KeyStore ks = KeyStore.getInstance(type);
+
+            ks.load(stream, password);
+
+            stream.close();
+        } catch (IOException | KeyStoreException | CertificateException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-
-    }
-
-    public boolean verify(String fileName, byte[] signature) {
-        return true;
     }
 }
