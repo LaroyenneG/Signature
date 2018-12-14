@@ -5,48 +5,60 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 public class SignatureTools {
 
     private List<PublicKey> publicKeys;
 
-    private char[] password;
-    private File file;
-    private String type;
-    private String distinguishedName;
-
-    public SignatureTools(String filePath, char[] password, String type, String distinguishedName) {
-        this.file = new File(filePath);
-        this.password = password;
-        this.type = type;
-        this.distinguishedName = distinguishedName;
+    public SignatureTools(String filePath, char[] password, String type, String distinguishedName) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
         publicKeys = new ArrayList<>();
+
+        loadPublicKeys(new File(filePath), password, type, distinguishedName);
+
     }
 
     public static void main(String[] args) {
         System.out.println("hello");
     }
 
-    public boolean verify(String fileName, byte[] signature) {
-        return true;
-    }
+    //public boolean verify(String fileName, byte[] signature) {
 
-    public void readFile() {
 
-        try {
+    //}
 
-            FileInputStream stream = new FileInputStream(file);
+    private void loadPublicKeys(File file, char[] password, String type, String DN) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
 
-            KeyStore ks = KeyStore.getInstance(type);
+        FileInputStream stream = new FileInputStream(file);
 
-            ks.load(stream, password);
+        KeyStore ks = KeyStore.getInstance(type);
 
-            stream.close();
-        } catch (IOException | KeyStoreException | CertificateException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
+        ks.load(stream, password);
+
+        stream.close();
+
+        Enumeration<String> aliases = ks.aliases();
+
+        while (aliases.hasMoreElements()) {
+
+            String alias = aliases.nextElement();
+
+            if (ks.isCertificateEntry(alias) || ks.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
+
+                Certificate cert = ks.getCertificate(alias);
+
+                if (cert instanceof X509Certificate) {
+                    if (((X509Certificate) cert).getSubjectDN().toString().equals(DN)) {
+                        PublicKey pbk = cert.getPublicKey();
+                        this.publicKeys.add(pbk);
+                    }
+                }
+            }
         }
     }
 }
