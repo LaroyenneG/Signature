@@ -24,7 +24,23 @@ public class SignatureTools {
     }
 
     public static void main(String[] args) {
-        System.out.println("hello");
+
+        if (args.length != 1) {
+            System.err.println("Usage : SignatureTools <file name>");
+            System.exit(-1);
+        }
+
+        String path = args[0];
+
+        try {
+
+            SignatureTools signatureTools = new SignatureTools(path, "password".toCharArray(), "JCEKS", "dfvfd");
+
+            System.out.println(signatureTools);
+
+        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //public boolean verify(String fileName, byte[] signature) {
@@ -60,5 +76,10 @@ public class SignatureTools {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return publicKeys.toString();
     }
 }
