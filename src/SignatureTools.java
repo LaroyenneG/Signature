@@ -1,10 +1,7 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -34,7 +31,7 @@ public class SignatureTools {
 
         try {
 
-            SignatureTools signatureTools = new SignatureTools(path, "password".toCharArray(), "JCEKS", "dfvfd");
+            SignatureTools signatureTools = new SignatureTools(path, "azerty".toCharArray(), "JCEKS", "CN=Patrick Guichet, OU=FST, O=UHA, L=Mulhouse, ST=68093, C=FR");
 
             System.out.println(signatureTools);
 
@@ -43,10 +40,23 @@ public class SignatureTools {
         }
     }
 
-    //public boolean verify(String fileName, byte[] signature) {
+    public boolean verify(String fileName, byte[] signature) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature sigDSA = Signature.getInstance("SHA256withDSA", "SUN");
+        Signature sigECDSA = Signature.getInstance("SHA256withECDSA", "SUN");
+        Signature sigRSA = Signature.getInstance("SHA256withRSA", "SUN");
+
+        for (PublicKey pubk : publicKeys) {
+            sigDSA.initVerify(pubk);
+            sigRSA.initVerify(pubk);
+            sigECDSA.initVerify(pubk);
 
 
-    //}
+            if (sigDSA.verify(signature) || sigECDSA.verify(signature) || sigRSA.verify(signature)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void loadPublicKeys(File file, char[] password, String type, String DN) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
 
