@@ -10,13 +10,20 @@ import java.util.Enumeration;
 import java.util.List;
 public class SignatureTools {
 
+    public static final String TYPE = "JCEKS";
+
+    private static final String SUN = "SUN";
+    private static final String SHA256_WITH_DSA = "SHA256withDSA";
+    private static final String SHA256_WITH_ECDSA = "SHA256withECDSA";
+    private static final String SHA256_WITT_RSA = "SHA256withRSA";
+
     private List<PublicKey> publicKeys;
 
     public SignatureTools(String filePath, char[] password, String type, String distinguishedName) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+
         publicKeys = new ArrayList<>();
 
         loadPublicKeys(new File(filePath), password, type, distinguishedName);
-
     }
 
     public static void main(String[] args) {
@@ -30,7 +37,7 @@ public class SignatureTools {
 
         try {
 
-            SignatureTools signatureTools = new SignatureTools(path, "azerty".toCharArray(), "JCEKS", "CN=Patrick Guichet, OU=FST, O=UHA, L=Mulhouse, ST=68093, C=FR");
+            SignatureTools signatureTools = new SignatureTools(path, "azerty".toCharArray(), TYPE, "CN=Patrick Guichet, OU=FST, O=UHA, L=Mulhouse, ST=68093, C=FR");
 
             System.out.println(signatureTools);
 
@@ -41,15 +48,16 @@ public class SignatureTools {
 
 
     public boolean verify(String fileName, byte[] signature) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        Signature sigDSA = Signature.getInstance("SHA256withDSA", "SUN");
-        Signature sigECDSA = Signature.getInstance("SHA256withECDSA", "SUN");
-        Signature sigRSA = Signature.getInstance("SHA256withRSA", "SUN");
 
-        for (PublicKey pubk : publicKeys) {
-            sigDSA.initVerify(pubk);
-            sigRSA.initVerify(pubk);
-            sigECDSA.initVerify(pubk);
+        Signature sigDSA = Signature.getInstance(SHA256_WITH_DSA, SUN);
+        Signature sigECDSA = Signature.getInstance(SHA256_WITH_ECDSA, SUN);
+        Signature sigRSA = Signature.getInstance(SHA256_WITT_RSA, SUN);
 
+        for (PublicKey publicKey : publicKeys) {
+
+            sigDSA.initVerify(publicKey);
+            sigRSA.initVerify(publicKey);
+            sigECDSA.initVerify(publicKey);
 
             if (sigDSA.verify(signature) || sigECDSA.verify(signature) || sigRSA.verify(signature)) {
                 return true;
@@ -58,28 +66,28 @@ public class SignatureTools {
         return false;
     }
 
-    private void loadPublicKeys(File file, char[] password, String type, String DN) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
+    private void loadPublicKeys(File file, char[] password, String type, String distName) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
 
         FileInputStream stream = new FileInputStream(file);
 
-        KeyStore ks = KeyStore.getInstance(type);
+        KeyStore keyStore = KeyStore.getInstance(type);
 
-        ks.load(stream, password);
+        keyStore.load(stream, password);
 
         stream.close();
 
-        Enumeration<String> aliases = ks.aliases();
+        Enumeration<String> aliases = keyStore.aliases();
 
         while (aliases.hasMoreElements()) {
 
             String alias = aliases.nextElement();
 
-            if (ks.isCertificateEntry(alias) || ks.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
+            if (keyStore.isCertificateEntry(alias) || keyStore.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
 
-                Certificate cert = ks.getCertificate(alias);
+                Certificate cert = keyStore.getCertificate(alias);
 
                 if (cert instanceof X509Certificate) {
-                    if (((X509Certificate) cert).getSubjectDN().toString().equals(DN)) {
+                    if (((X509Certificate) cert).getSubjectDN().toString().equals(distName)) {
                         PublicKey pbk = cert.getPublicKey();
                         this.publicKeys.add(pbk);
                     }
