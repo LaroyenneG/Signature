@@ -8,7 +8,6 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
 public class SignatureTools {
 
     private List<PublicKey> publicKeys;
@@ -39,6 +38,7 @@ public class SignatureTools {
             e.printStackTrace();
         }
     }
+
 
     public boolean verify(String fileName, byte[] signature) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Signature sigDSA = Signature.getInstance("SHA256withDSA", "SUN");
