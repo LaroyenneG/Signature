@@ -14,6 +14,7 @@ public class SignatureTools {
     public static final String TYPE = "JCEKS";
 
     private static final String SUN = "SUN";
+    private static final String SUN_EC = "SunEC";
     private static final String SHA256_WITH_DSA = "SHA256withDSA";
     private static final String SHA256_WITH_ECDSA = "SHA256withECDSA";
     private static final String SHA256_WITT_RSA = "SHA256withRSA";
@@ -56,16 +57,16 @@ public class SignatureTools {
 
         bufferedInputStream.close();
 
-        Signature sigDSA = Signature.getInstance(SHA256_WITH_DSA, SUN);
-        sigDSA.update(fileBytes);
-
-        Signature sigECDSA = Signature.getInstance(SHA256_WITH_ECDSA, SUN);
-        sigECDSA.update(fileBytes);
-
-        Signature sigRSA = Signature.getInstance(SHA256_WITT_RSA, SUN);
-        sigRSA.update(fileBytes);
-
         for (PublicKey publicKey : publicKeys) {
+
+            Signature sigDSA = Signature.getInstance(SHA256_WITH_DSA, SUN);
+            sigDSA.update(fileBytes);
+
+            Signature sigECDSA = Signature.getInstance(SHA256_WITH_ECDSA, SUN_EC);
+            sigECDSA.update(fileBytes);
+
+            Signature sigRSA = Signature.getInstance(SHA256_WITT_RSA, SUN);
+            sigRSA.update(fileBytes);
 
             sigDSA.initVerify(publicKey);
             sigRSA.initVerify(publicKey);
