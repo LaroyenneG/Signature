@@ -48,10 +48,11 @@ public class SignatureTools {
         loadPrivateKeys(new File(filePath), password, type, distinguishedName);
     }
 
-    public List<String> allDNList(File file, char[] password, String type) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
+    public static List<String> getAllDNList(String filePath, char[] password, String type) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
+
         List<String> listDN = new ArrayList<>();
 
-        FileInputStream fileInputStream = new FileInputStream(file);
+        FileInputStream fileInputStream = new FileInputStream(filePath);
         KeyStore keyStore = KeyStore.getInstance(type);
         keyStore.load(fileInputStream, password);
         fileInputStream.close();
@@ -65,7 +66,7 @@ public class SignatureTools {
 
                 if (certificate instanceof X509Certificate) {
                     String strDN = ((X509Certificate) certificate).getSubjectDN().toString();
-                    if (listDN.contains(strDN)) {
+                    if (!listDN.contains(strDN)) {
                         listDN.add(strDN);
                     }
                 }
@@ -76,29 +77,9 @@ public class SignatureTools {
         return listDN;
     }
 
-    private static boolean checkInvalidSignatureByPublicKey(byte[] signature, PublicKey publicKey) {
+    public byte[] generateSignature(String filePath, PrivateKey privateKey) throws IOException, SignatureException, InvalidKeyException, NoSuchAlgorithmException {
 
-        switch (publicKey.getAlgorithm()) {
-
-            case EC_ALGORITHM:
-             /*
-               to complete
-              */
-                break;
-
-            case RSA_ALGORITHM:
-              /*
-                 to complete
-               */
-                break;
-        }
-
-        return true;
-    }
-
-    public byte[] generateSignature(String fileName, PrivateKey privateKey) throws IOException, SignatureException, InvalidKeyException, NoSuchAlgorithmException {
-
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileName));
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(filePath));
 
         byte[] data = bufferedInputStream.readAllBytes();
 
@@ -213,8 +194,6 @@ public class SignatureTools {
 
         for (PublicKey publicKey : publicKeys) {
 
-            if (checkInvalidSignatureByPublicKey(signature, publicKey)) {
-
                 Signature sign = null;
 
                 switch (publicKey.getAlgorithm()) {
@@ -239,9 +218,11 @@ public class SignatureTools {
                 sign.initVerify(publicKey);
                 sign.update(data);
 
+            try {
                 if (sign.verify(signature)) {
                     return true;
                 }
+            } catch (SignatureException ignored) {
             }
         }
         return false;
