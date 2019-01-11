@@ -124,32 +124,23 @@ public class SignatureTools {
         return false;
     }
 
-    private void loadPrivateKeys(File file, char[] password, String type, String distinguishedName) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
+    public static void main(String[] args) {
 
-        FileInputStream fileInputStream = new FileInputStream(file);
+        if (args.length != 2) {
+            System.err.println("Usage : SignatureTools <file name> <password>");
+            System.exit(-1);
+        }
 
-        KeyStore keyStore = KeyStore.getInstance(type);
+        String path = args[0];
+        String password = args[1];
 
-        keyStore.load(fileInputStream, password);
+        try {
+            SignatureTools signatureTools = new SignatureTools(path, password.toCharArray(), TYPE, "CN=Paul Lemettre, OU=uha, O=ensisa, L=mulhouse, ST=france, C=FR");
 
-        fileInputStream.close();
+            System.out.println(signatureTools);
 
-        Enumeration<String> aliases = keyStore.aliases();
-
-        while (aliases.hasMoreElements()) {
-
-            String alias = aliases.nextElement();
-
-            Key key = keyStore.getKey(alias, password);
-
-            if (key instanceof PrivateKey) {
-
-                PrivateKey privateKey = (PrivateKey) privateKeys;
-
-                if ((privateKey instanceof RSAPrivateKey) || (privateKey instanceof DSAPrivateKey) || (privateKey instanceof ECPrivateKey)) {
-                    privateKeys.add(privateKey);
-                }
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -202,5 +193,34 @@ public class SignatureTools {
         stringBuilder.append(privateKeys);
 
         return new String(stringBuilder);
+    }
+
+    private void loadPrivateKeys(File file, char[] password, String type, String distinguishedName) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
+
+        FileInputStream fileInputStream = new FileInputStream(file);
+
+        KeyStore keyStore = KeyStore.getInstance(type);
+
+        keyStore.load(fileInputStream, password);
+
+        fileInputStream.close();
+
+        Enumeration<String> aliases = keyStore.aliases();
+
+        while (aliases.hasMoreElements()) {
+
+            String alias = aliases.nextElement();
+
+            Key key = keyStore.getKey(alias, password);
+
+            if (key instanceof PrivateKey) {
+
+                PrivateKey privateKey = (PrivateKey) key;
+
+                if ((privateKey instanceof RSAPrivateKey) || (privateKey instanceof DSAPrivateKey) || (privateKey instanceof ECPrivateKey)) {
+                    privateKeys.add(privateKey);
+                }
+            }
+        }
     }
 }
