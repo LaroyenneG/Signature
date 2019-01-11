@@ -44,7 +44,7 @@ public class SignatureTools {
 
             System.out.println(signatureTools);
 
-            System.out.println(signatureTools.verify("assets/bidon.txt", "81:60:66:FC:07:61:AF:C1:A0:0A:F4:9B:29:17:84:EE:06:85:92:61:05:CF:70:42:7F:C6:E8:24:BB:53:3D:F4".getBytes()));
+            System.out.println(signatureTools.verify("assets/bidon.txt", "absdtkjdtvolpmqtrgtfnbbnjhgdvgdt".getBytes()));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,8 +73,8 @@ public class SignatureTools {
                     sign = Signature.getInstance(SHA256_WITH_ECDSA, SUN_EC);
                     break;
 
-                case SHA256_WITT_RSA:
-                    sign = Signature.getInstance(SHA256_WITT_RSA, SUN);
+                case "RSA":
+                    sign = Signature.getInstance(SHA256_WITT_RSA);
                     break;
 
                 default:
