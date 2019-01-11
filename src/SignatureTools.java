@@ -30,20 +30,24 @@ public class SignatureTools {
 
     public static void main(String[] args) {
 
-        if (args.length != 1) {
-            System.err.println("Usage : SignatureTools <file name>");
+        if (args.length != 2) {
+            System.err.println("Usage : SignatureTools <file name> <password>");
             System.exit(-1);
         }
 
         String path = args[0];
+        String password = args[1];
+
 
         try {
 
-            SignatureTools signatureTools = new SignatureTools(path, "azerty".toCharArray(), TYPE, "CN=Patrick Guichet, OU=FST, O=UHA, L=Mulhouse, ST=68093, C=FR");
+            SignatureTools signatureTools = new SignatureTools(path, password.toCharArray(), TYPE, "CN=Paul Lemettre, OU=uha, O=ensisa, L=mulhouse, ST=france, C=FR");
 
             System.out.println(signatureTools);
 
-        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException | IOException e) {
+            System.out.println(signatureTools.verify("assets/bidon.txt", "81:60:66:FC:07:61:AF:C1:A0:0A:F4:9B:29:17:84:EE:06:85:92:61:05:CF:70:42:7F:C6:E8:24:BB:53:3D:F4".getBytes()));
+
+        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException | IOException | SignatureException | NoSuchProviderException | InvalidKeyException e) {
             e.printStackTrace();
         }
     }
