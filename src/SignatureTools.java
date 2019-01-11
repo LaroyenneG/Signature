@@ -44,7 +44,7 @@ public class SignatureTools {
 
             System.out.println(signatureTools);
 
-            System.out.println(signatureTools.verify("assets/bidon.txt", "absdtkjdtvolpmqtrgtfnbbnjhgdvgdt".getBytes()));
+            System.out.println(signatureTools.verify("assets/bidon.txt", "absdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdt".getBytes()));
 
         } catch (Exception e) {
             e.printStackTrace();
