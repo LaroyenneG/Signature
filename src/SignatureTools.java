@@ -60,7 +60,7 @@ public class SignatureTools {
 
             System.out.println(signatureTools);
 
-            System.out.println(signatureTools.verify("assets/bidon.txt", "absdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdtabsdtkjdtvolpmqtrgtfnbbnjhgdvgdt".getBytes()));
+            System.out.println(signatureTools.verify("assets/bidon.txt", "".getBytes()));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,7 +102,7 @@ public class SignatureTools {
         return sign.sign();
     }
 
-    public boolean verify(String fileName, byte[] signature) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
+    public boolean verify(String fileName, byte[] signature) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
 
         BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileName));
 
