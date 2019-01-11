@@ -1,3 +1,5 @@
+package model;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,6 +8,9 @@ import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -31,40 +36,16 @@ public class SignatureTools {
     private static final String ECDSA_ALGORITHM = "ECDSA";
 
 
-
-
     private List<PublicKey> publicKeys;
-    private List<PrivateKey> pravateKeys;
+    private List<PrivateKey> privateKeys;
 
-    public SignatureTools(String filePath, char[] password, String type, String distinguishedName) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    public SignatureTools(String filePath, char[] password, String type, String distinguishedName) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, UnrecoverableKeyException {
 
         publicKeys = new ArrayList<>();
+        privateKeys = new ArrayList<>();
 
         loadPublicKeys(new File(filePath), password, type, distinguishedName);
         loadPrivateKeys(new File(filePath), password, type, distinguishedName);
-    }
-
-
-    public static void main(String[] args) {
-
-        if (args.length != 2) {
-            System.err.println("Usage : SignatureTools <file name> <password>");
-            System.exit(-1);
-        }
-
-        String path = args[0];
-        String password = args[1];
-
-        try {
-            SignatureTools signatureTools = new SignatureTools(path, password.toCharArray(), TYPE, "CN=Paul Lemettre, OU=uha, O=ensisa, L=mulhouse, ST=france, C=FR");
-
-            System.out.println(signatureTools);
-
-            System.out.println(signatureTools.verify("assets/bidon.txt", "".getBytes()));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public byte[] generateSignature(String fileName, PrivateKey privateKey) throws IOException, SignatureException, InvalidKeyException, NoSuchAlgorithmException {
@@ -102,7 +83,7 @@ public class SignatureTools {
         return sign.sign();
     }
 
-    public boolean verify(String fileName, byte[] signature) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
+    public boolean verify(String fileName, byte[] signature) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
 
         BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileName));
 
@@ -143,7 +124,7 @@ public class SignatureTools {
         return false;
     }
 
-    private void loadPrivateKeys(File file, char[] password, String type, String distinguishedName) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
+    private void loadPrivateKeys(File file, char[] password, String type, String distinguishedName) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
 
         FileInputStream fileInputStream = new FileInputStream(file);
 
@@ -159,9 +140,15 @@ public class SignatureTools {
 
             String alias = aliases.nextElement();
 
-            if (keyStore.isCertificateEntry(alias) || keyStore.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
+            Key key = keyStore.getKey(alias, password);
 
-                Certificate cert = keyStore.getCertificate(alias);
+            if (key instanceof PrivateKey) {
+
+                PrivateKey privateKey = (PrivateKey) privateKeys;
+
+                if ((privateKey instanceof RSAPrivateKey) || (privateKey instanceof DSAPrivateKey) || (privateKey instanceof ECPrivateKey)) {
+                    privateKeys.add(privateKey);
+                }
             }
         }
     }
@@ -184,20 +171,37 @@ public class SignatureTools {
 
             if (keyStore.isCertificateEntry(alias) || keyStore.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
 
-                Certificate cert = keyStore.getCertificate(alias);
+                Certificate certificate = keyStore.getCertificate(alias);
 
-                if (cert instanceof X509Certificate) {
-                    if (((X509Certificate) cert).getSubjectDN().toString().equals(distinguishedName)) {
-                        PublicKey pbk = cert.getPublicKey();
-                        publicKeys.add(pbk);
+                if (certificate instanceof X509Certificate) {
+                    if (((X509Certificate) certificate).getSubjectDN().toString().equals(distinguishedName)) {
+                        PublicKey publicKey = certificate.getPublicKey();
+                        publicKeys.add(publicKey);
                     }
                 }
             }
         }
     }
 
+
+    List<PrivateKey> getPrivateKeys() {
+        return privateKeys;
+    }
+
+    public List<PublicKey> getPublicKeys() {
+        return publicKeys;
+    }
+
     @Override
     public String toString() {
-        return publicKeys.toString();
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("Public keys :\n");
+        stringBuilder.append(publicKeys);
+        stringBuilder.append("Private keys :\n");
+        stringBuilder.append(privateKeys);
+
+        return new String(stringBuilder);
     }
 }
