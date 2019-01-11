@@ -38,7 +38,6 @@ public class SignatureTools {
         String path = args[0];
         String password = args[1];
 
-
         try {
 
             SignatureTools signatureTools = new SignatureTools(path, password.toCharArray(), TYPE, "CN=Paul Lemettre, OU=uha, O=ensisa, L=mulhouse, ST=france, C=FR");
@@ -47,7 +46,7 @@ public class SignatureTools {
 
             System.out.println(signatureTools.verify("assets/bidon.txt", "81:60:66:FC:07:61:AF:C1:A0:0A:F4:9B:29:17:84:EE:06:85:92:61:05:CF:70:42:7F:C6:E8:24:BB:53:3D:F4".getBytes()));
 
-        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException | IOException | SignatureException | NoSuchProviderException | InvalidKeyException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -63,20 +62,30 @@ public class SignatureTools {
 
         for (PublicKey publicKey : publicKeys) {
 
-            Signature sigDSA = Signature.getInstance(SHA256_WITH_DSA, SUN);
-            sigDSA.update(fileBytes);
+            Signature sign = null;
 
-            Signature sigECDSA = Signature.getInstance(SHA256_WITH_ECDSA, SUN_EC);
-            sigECDSA.update(fileBytes);
+            switch (publicKey.getAlgorithm()) {
+                case SHA256_WITH_DSA:
+                    sign = Signature.getInstance(SHA256_WITH_DSA, SUN);
+                    break;
 
-            Signature sigRSA = Signature.getInstance(SHA256_WITT_RSA, SUN);
-            sigRSA.update(fileBytes);
+                case SHA256_WITH_ECDSA:
+                    sign = Signature.getInstance(SHA256_WITH_ECDSA, SUN_EC);
+                    break;
 
-            sigDSA.initVerify(publicKey);
-            sigRSA.initVerify(publicKey);
-            sigECDSA.initVerify(publicKey);
+                case SHA256_WITT_RSA:
+                    sign = Signature.getInstance(SHA256_WITT_RSA, SUN);
+                    break;
 
-            if (sigDSA.verify(signature) || sigECDSA.verify(signature) || sigRSA.verify(signature)) {
+                default:
+                    System.err.println("Unknown algorithm !");
+                    return false;
+            }
+
+            sign.initVerify(publicKey);
+            sign.update(fileBytes);
+
+            if (sign.verify(signature)) {
                 return true;
             }
         }
