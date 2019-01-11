@@ -39,7 +39,6 @@ public class SignatureTools {
         String password = args[1];
 
         try {
-
             SignatureTools signatureTools = new SignatureTools(path, password.toCharArray(), TYPE, "CN=Paul Lemettre, OU=uha, O=ensisa, L=mulhouse, ST=france, C=FR");
 
             System.out.println(signatureTools);
