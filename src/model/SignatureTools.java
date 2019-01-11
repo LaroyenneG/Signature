@@ -61,7 +61,6 @@ public class SignatureTools {
         while (aliases.hasMoreElements()) {
             String alias = aliases.nextElement();
             if (keyStore.isCertificateEntry(alias) || keyStore.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
-
                 Certificate certificate = keyStore.getCertificate(alias);
 
                 if (certificate instanceof X509Certificate) {
