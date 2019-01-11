@@ -78,7 +78,7 @@ public class SignatureTools {
                     break;
 
                 default:
-                    System.err.println("Unknown algorithm !");
+                    System.err.println("Unknown algorithm :" + publicKey.getAlgorithm());
                     return false;
             }
 
