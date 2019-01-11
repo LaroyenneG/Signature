@@ -48,6 +48,35 @@ public class SignatureTools {
         loadPrivateKeys(new File(filePath), password, type, distinguishedName);
     }
 
+    public List<String> allDNList(File file, char[] password, String type) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
+        List<String> listDN = new ArrayList<>();
+
+        FileInputStream fileInputStream = new FileInputStream(file);
+        KeyStore keyStore = KeyStore.getInstance(type);
+        keyStore.load(fileInputStream, password);
+        fileInputStream.close();
+
+        Enumeration<String> aliases = keyStore.aliases();
+
+        while (aliases.hasMoreElements()) {
+            String alias = aliases.nextElement();
+            if (keyStore.isCertificateEntry(alias) || keyStore.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
+
+                Certificate certificate = keyStore.getCertificate(alias);
+
+                if (certificate instanceof X509Certificate) {
+                    String strDN = ((X509Certificate) certificate).getSubjectDN().toString();
+                    if (listDN.contains(strDN)) {
+                        listDN.add(strDN);
+                    }
+                }
+            }
+
+        }
+
+        return listDN;
+    }
+
     private static boolean checkInvalidSignatureByPublicKey(byte[] signature, PublicKey publicKey) {
 
         switch (publicKey.getAlgorithm()) {
@@ -143,11 +172,12 @@ public class SignatureTools {
 
                 Certificate certificate = keyStore.getCertificate(alias);
 
-                if (certificate instanceof X509Certificate)
+                if (certificate instanceof X509Certificate) {
                     if (((X509Certificate) certificate).getSubjectDN().toString().equals(distinguishedName)) {
                         PublicKey publicKey = certificate.getPublicKey();
                         publicKeys.add(publicKey);
                     }
+                }
             }
         }
     }
