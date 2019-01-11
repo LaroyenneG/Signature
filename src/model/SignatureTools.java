@@ -33,7 +33,7 @@ public class SignatureTools {
      */
     private static final String RSA_ALGORITHM = "RSA";
     private static final String DSA_ALGORITHM = "DSA";
-    private static final String ECDSA_ALGORITHM = "ECDSA";
+    private static final String EC_ALGORITHM = "EC";
 
 
     private List<PublicKey> publicKeys;
@@ -46,6 +46,26 @@ public class SignatureTools {
 
         loadPublicKeys(new File(filePath), password, type, distinguishedName);
         loadPrivateKeys(new File(filePath), password, type, distinguishedName);
+    }
+
+    private static boolean checkInvalidSignatureByPublicKey(byte[] signature, PublicKey publicKey) {
+
+        switch (publicKey.getAlgorithm()) {
+
+            case EC_ALGORITHM:
+             /*
+               to complete
+              */
+                break;
+
+            case RSA_ALGORITHM:
+              /*
+                 to complete
+               */
+                break;
+        }
+
+        return true;
     }
 
     public byte[] generateSignature(String fileName, PrivateKey privateKey) throws IOException, SignatureException, InvalidKeyException, NoSuchAlgorithmException {
@@ -64,7 +84,7 @@ public class SignatureTools {
                 sign = Signature.getInstance(SHA256_WITH_DSA);
                 break;
 
-            case ECDSA_ALGORITHM:
+            case EC_ALGORITHM:
                 sign = Signature.getInstance(SHA256_WITH_ECDSA);
                 break;
 
@@ -81,47 +101,6 @@ public class SignatureTools {
         sign.update(data);
 
         return sign.sign();
-    }
-
-    public boolean verify(String fileName, byte[] signature) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
-
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileName));
-
-        byte[] data = bufferedInputStream.readAllBytes();
-
-        bufferedInputStream.close();
-
-        for (PublicKey publicKey : publicKeys) {
-
-            Signature sign = null;
-
-            switch (publicKey.getAlgorithm()) {
-
-                case DSA_ALGORITHM:
-                    sign = Signature.getInstance(SHA256_WITH_DSA);
-                    break;
-
-                case ECDSA_ALGORITHM:
-                    sign = Signature.getInstance(SHA256_WITH_ECDSA);
-                    break;
-
-                case RSA_ALGORITHM:
-                    sign = Signature.getInstance(SHA256_WITH_RSA);
-                    break;
-
-                default:
-                    System.err.println("Unknown algorithm :" + publicKey.getAlgorithm());
-                    return false;
-            }
-
-            sign.initVerify(publicKey);
-            sign.update(data);
-
-            if (sign.verify(signature)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static void main(String[] args) {
@@ -195,6 +174,50 @@ public class SignatureTools {
         return new String(stringBuilder);
     }
 
+    public boolean verify(String fileName, byte[] signature) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
+
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileName));
+
+        byte[] data = bufferedInputStream.readAllBytes();
+
+        bufferedInputStream.close();
+
+        for (PublicKey publicKey : publicKeys) {
+
+            if (checkInvalidSignatureByPublicKey(signature, publicKey)) {
+
+                Signature sign = null;
+
+                switch (publicKey.getAlgorithm()) {
+
+                    case DSA_ALGORITHM:
+                        sign = Signature.getInstance(SHA256_WITH_DSA);
+                        break;
+
+                    case EC_ALGORITHM:
+                        sign = Signature.getInstance(SHA256_WITH_ECDSA);
+                        break;
+
+                    case RSA_ALGORITHM:
+                        sign = Signature.getInstance(SHA256_WITH_RSA);
+                        break;
+
+                    default:
+                        System.err.println("Unknown algorithm :" + publicKey.getAlgorithm());
+                        return false;
+                }
+
+                sign.initVerify(publicKey);
+                sign.update(data);
+
+                if (sign.verify(signature)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private void loadPrivateKeys(File file, char[] password, String type, String distinguishedName) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
 
         FileInputStream fileInputStream = new FileInputStream(file);
@@ -218,7 +241,16 @@ public class SignatureTools {
                 PrivateKey privateKey = (PrivateKey) key;
 
                 if ((privateKey instanceof RSAPrivateKey) || (privateKey instanceof DSAPrivateKey) || (privateKey instanceof ECPrivateKey)) {
-                    privateKeys.add(privateKey);
+
+                    if (keyStore.isCertificateEntry(alias) || keyStore.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
+
+                        Certificate certificate = keyStore.getCertificate(alias);
+
+                        if (certificate instanceof X509Certificate)
+                            if (((X509Certificate) certificate).getSubjectDN().toString().equals(distinguishedName)) {
+                                privateKeys.add(privateKey);
+                            }
+                    }
                 }
             }
         }
