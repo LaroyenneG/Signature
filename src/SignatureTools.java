@@ -1,3 +1,4 @@
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -47,11 +48,22 @@ public class SignatureTools {
     }
 
 
-    public boolean verify(String fileName, byte[] signature) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    public boolean verify(String fileName, byte[] signature) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
+
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileName));
+
+        byte[] fileBytes = bufferedInputStream.readAllBytes();
+
+        bufferedInputStream.close();
 
         Signature sigDSA = Signature.getInstance(SHA256_WITH_DSA, SUN);
+        sigDSA.update(fileBytes);
+
         Signature sigECDSA = Signature.getInstance(SHA256_WITH_ECDSA, SUN);
+        sigECDSA.update(fileBytes);
+
         Signature sigRSA = Signature.getInstance(SHA256_WITT_RSA, SUN);
+        sigRSA.update(fileBytes);
 
         for (PublicKey publicKey : publicKeys) {
 
