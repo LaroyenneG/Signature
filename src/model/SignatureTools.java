@@ -173,12 +173,11 @@ public class SignatureTools {
 
                 Certificate certificate = keyStore.getCertificate(alias);
 
-                if (certificate instanceof X509Certificate) {
+                if (certificate instanceof X509Certificate)
                     if (((X509Certificate) certificate).getSubjectDN().toString().equals(distinguishedName)) {
                         PublicKey publicKey = certificate.getPublicKey();
                         publicKeys.add(publicKey);
                     }
-                }
             }
         }
     }

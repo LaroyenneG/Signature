@@ -22,7 +22,7 @@ public class SignatureToolsTest {
 
         try {
             sut = new SignatureTools(FILE_NAME_STORE_FILE, PASSWORD.toCharArray(), SignatureTools.TYPE, DISTINGUISHED_NAME);
-        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException | IOException e) {
+        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException | IOException | UnrecoverableKeyException e) {
             e.printStackTrace();
             fail();
         }
@@ -34,7 +34,7 @@ public class SignatureToolsTest {
         try {
             sut = new SignatureTools(FILE_NAME_STORE_FILE, PASSWORD.toCharArray(), SignatureTools.TYPE, DISTINGUISHED_NAME);
             assertTrue(sut.verify("assets/fileTest.txt", "81:60:66:FC:07:61:AF:C1:A0:0A:F4:9B:29:17:84:EE:06:85:92:61:05:CF:70:42:7F:C6:E8:24:BB:53:3D:F4".getBytes()));
-        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException | IOException | SignatureException | NoSuchProviderException | InvalidKeyException e) {
+        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException | IOException | SignatureException | NoSuchProviderException | InvalidKeyException | UnrecoverableKeyException e) {
             e.printStackTrace();
             fail();
         }
