@@ -71,7 +71,6 @@ public class SignatureTools {
                     }
                 }
             }
-
         }
 
         return listDN;
@@ -110,26 +109,6 @@ public class SignatureTools {
         sign.update(data);
 
         return sign.sign();
-    }
-
-    public static void main(String[] args) {
-
-        if (args.length != 2) {
-            System.err.println("Usage : SignatureTools <file name> <password>");
-            System.exit(-1);
-        }
-
-        String path = args[0];
-        String password = args[1];
-
-        try {
-            SignatureTools signatureTools = new SignatureTools(path, password.toCharArray(), TYPE, "CN=Paul Lemettre, OU=uha, O=ensisa, L=mulhouse, ST=france, C=FR");
-
-            System.out.println(signatureTools);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void loadPublicKeys(File file, char[] password, String type, String distinguishedName) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
@@ -263,6 +242,26 @@ public class SignatureTools {
                     }
                 }
             }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        if (args.length != 2) {
+            System.err.println("Usage : java SignatureTools <file name> <password>");
+            System.exit(-1);
+        }
+
+        String path = args[0];
+        String password = args[1];
+
+        try {
+            SignatureTools signatureTools = new SignatureTools(path, password.toCharArray(), TYPE, "CN=Paul Lemettre, OU=uha, O=ensisa, L=mulhouse, ST=france, C=FR");
+
+            System.out.println(signatureTools);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
