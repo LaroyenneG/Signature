@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SignatureToolsTest {
 
-    private static final String FILE_NAME_STORE_FILE = "assets/keystoreTest.jks";
+    private static final String FILE_NAME_STORE_FILE = "test/assets/keystoreTest.jks";
     private static final String PASSWORD = "password";
     private static final String DISTINGUISHED_NAME = "CN=Paul Lemettre, OU=uha, O=ensisa, L=mulhouse, ST=france, C=FR";
-    private static final String FILE_TO_TEST = "assets/fileTest.txt";
+    private static final String FILE_TO_TEST = "test/assets/fileTest.txt";
 
 
     private SignatureTools sut;

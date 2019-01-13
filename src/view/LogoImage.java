@@ -3,8 +3,8 @@ package view;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class LogoImage extends Canvas {
 
@@ -20,7 +20,11 @@ public class LogoImage extends Canvas {
     public void paint(Graphics g) {
 
         try {
-            BufferedImage bufferedImage = ImageIO.read(new File("assets/logo.png"));
+            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream("assets/logo.png");
+
+            assert inputStream != null;
+
+            BufferedImage bufferedImage = ImageIO.read(inputStream);
 
             int imgWidth = bufferedImage.getWidth();
             int imgHeight = bufferedImage.getHeight();
