@@ -89,6 +89,22 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
         }
     }
 
+    public int getPrivateKeyItemSelect() {
+
+        return privateKeyComboBox.getSelectedIndex();
+    }
+
+    public String getDnItemSelect() {
+
+        int i = distinguishedComboBox.getSelectedIndex();
+
+        if (i >= 0) {
+            return distinguishedComboBox.getItemAt(distinguishedComboBox.getSelectedIndex());
+        }
+
+        return "";
+    }
+
 
     public void displayKeyStoreFilePath(String path) {
         keyStoreFilePath.setText("               " + path);

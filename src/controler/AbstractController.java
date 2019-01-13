@@ -19,17 +19,27 @@ public abstract class AbstractController {
         this.viewer = viewer;
     }
 
-    protected void showErrorMessage(Exception e) {
-        JOptionPane.showMessageDialog(viewer, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    protected void showErrorMessageException(Exception e) {
+        showErrorMessage(e.getMessage());
+    }
+
+    protected void showErrorMessage(String text) {
+        JOptionPane.showMessageDialog(viewer, text, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    protected void showSuccessMessage(String text) {
+        JOptionPane.showMessageDialog(viewer, text, "Error", JOptionPane.INFORMATION_MESSAGE);
     }
 
     protected boolean loadAllDN() {
         try {
-            model.findAllDN();
-            viewer.displayDNs(model.getDNs());
-            return !model.getDNs().isEmpty();
+            List<String> strings = model.findAllDN();
+            viewer.displayDNs(strings);
+            model.setDns(strings.get(0));
+            loadAllInformationByDN();
+            return true;
         } catch (Exception e) {
-            showErrorMessage(e);
+            showErrorMessageException(e);
         }
 
         return false;
@@ -44,13 +54,17 @@ public abstract class AbstractController {
 
             List<String> keys = new ArrayList<>();
             for (PrivateKey k : privateKeys) {
-                keys.add(k.toString());
+                keys.add(k.getAlgorithm() + " : " + k.getFormat());
+            }
+
+            if (!keys.isEmpty()) {
+                model.setPrivateKey(0);
             }
 
             viewer.displayPrivateKeys(keys);
 
         } catch (Exception e) {
-            showErrorMessage(e);
+            showErrorMessageException(e);
         }
     }
 }

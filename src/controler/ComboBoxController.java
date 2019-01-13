@@ -15,6 +15,9 @@ public class ComboBoxController extends AbstractController implements ItemListen
     @Override
     public void itemStateChanged(ItemEvent itemEvent) {
 
-        System.out.println(itemEvent.getSource());
+        if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
+            model.setPrivateKey(viewer.getPrivateKeyItemSelect());
+            model.setDns(viewer.getDnItemSelect());
+        }
     }
 }

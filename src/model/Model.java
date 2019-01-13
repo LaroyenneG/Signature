@@ -5,7 +5,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.SignatureException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
@@ -16,12 +15,12 @@ public class Model {
     private String password;
     private String dn;
 
+    private int privateKey;
+
     private SignatureTools signatureTools;
 
-    private List<String> dns;
-
     public Model() {
-        dns = new ArrayList<>();
+        privateKey = -1;
         signature = "";
         dataFilePath = "";
         keyStoreFilePath = "";
@@ -31,8 +30,15 @@ public class Model {
     }
 
     public boolean canBuild() {
-
         return !keyStoreFilePath.isEmpty() && !dn.isEmpty();
+    }
+
+    public boolean canVerify() {
+        return canBuild() && !dataFilePath.isEmpty() && !signature.isEmpty();
+    }
+
+    public boolean canGenerate() {
+        return canBuild() && !dataFilePath.isEmpty() && privateKey >= 0;
     }
 
     public void buildSignatureTools() throws Exception {
@@ -54,12 +60,12 @@ public class Model {
         return status;
     }
 
-    public byte[] generateSignature(int keyId) {
+    public byte[] generateSignature() {
 
         byte[] signature = null;
 
         try {
-            signature = signatureTools.generateSignature(dataFilePath, signatureTools.getPrivateKeys().get(keyId));
+            signature = signatureTools.generateSignature(dataFilePath, signatureTools.getPrivateKeys().get(privateKey));
         } catch (IOException | SignatureException | InvalidKeyException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -67,13 +73,9 @@ public class Model {
         return signature;
     }
 
-    public void findAllDN() throws Exception {
+    public List<String> findAllDN() throws Exception {
 
-        List<String> strings = SignatureTools.getAllDNList(keyStoreFilePath, password.toCharArray(), SignatureTools.TYPE);
-
-        dns.clear();
-
-        dns.addAll(strings);
+        return SignatureTools.getAllDNList(keyStoreFilePath, password.toCharArray(), SignatureTools.TYPE);
     }
 
     public String getSignature() {
@@ -104,7 +106,7 @@ public class Model {
         return signatureTools.getPrivateKeys();
     }
 
-    public List<String> getDNs() {
-        return dns;
+    public void setPrivateKey(int privateKey) {
+        this.privateKey = privateKey;
     }
 }
