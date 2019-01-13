@@ -57,6 +57,7 @@ public abstract class AbstractController {
                 keys.add(k.getAlgorithm() + " : " + k.getFormat());
             }
 
+
             if (!keys.isEmpty()) {
                 model.setPrivateKey(0);
             } else {

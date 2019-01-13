@@ -16,7 +16,6 @@ public class DNComboBoxController extends AbstractController implements ItemList
     public void itemStateChanged(ItemEvent itemEvent) {
 
         if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-            model.setPrivateKey(viewer.getPrivateKeyItemSelect());
             model.setDns(viewer.getDnItemSelect());
             loadAllInformationByDN();
         }

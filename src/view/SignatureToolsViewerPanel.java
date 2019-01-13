@@ -75,12 +75,12 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
     }
 
     public void displayPrivateKeys(List<String> keys) {
-
         updateComboBoxIfNotEquals(keys, privateKeyComboBox);
     }
 
     private void updateComboBoxIfNotEquals(List<String> values, JComboBox<String> stringJComboBox) {
-        boolean equals = values.size() != stringJComboBox.getItemCount();
+
+        boolean equals = values.size() == stringJComboBox.getItemCount();
 
         if (equals) {
             for (int i = 0; i < values.size(); i++) {
@@ -95,14 +95,13 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
 
             stringJComboBox.removeAllItems();
 
-            for (String key : values) {
-                stringJComboBox.addItem(key);
+            for (String s : values) {
+                stringJComboBox.addItem(s);
             }
         }
     }
 
     public void displayDNs(List<String> dns) {
-
         updateComboBoxIfNotEquals(dns, distinguishedComboBox);
     }
 

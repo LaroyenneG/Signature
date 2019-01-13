@@ -42,7 +42,6 @@ public class Model {
     }
 
     public void buildSignatureTools() throws Exception {
-
         signatureTools = new SignatureTools(keyStoreFilePath, password.toCharArray(), SignatureTools.TYPE, dn);
     }
 
