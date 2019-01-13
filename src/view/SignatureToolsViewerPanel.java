@@ -22,12 +22,10 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
     private javax.swing.JLabel distinguishedLabel;
     private javax.swing.JPanel distinguishedPanel;
     private javax.swing.JLabel dataFileLabel;
-    private javax.swing.JPanel headerPanel;
     private javax.swing.JButton keyStoreFileButton;
     private javax.swing.JLabel keyStoreFilePath;
     private javax.swing.JLabel keyStoreLabel;
     private javax.swing.JPanel keyStorePanel;
-    private java.awt.Canvas logoCanvas;
     private javax.swing.JComboBox<String> privateKeyComboBox;
     private javax.swing.JLabel privateKeyLabel;
     private javax.swing.JPanel privateKeyPanel;
@@ -44,7 +42,7 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
         setNames();
     }
 
-    public void setNames() {
+    private void setNames() {
         buildSignButton.setName(BUTTON_GENERATE_NAME);
         verifySignButton.setName(BUTTON_VERIFY_NAME);
         keyStoreFileButton.setName(BUTTON_SELECT_KEY_STORE_NAME);
@@ -137,8 +135,6 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
         privateKeyPanel = new javax.swing.JPanel();
         privateKeyComboBox = new javax.swing.JComboBox<>();
         privateKeyLabel = new javax.swing.JLabel();
-        headerPanel = new javax.swing.JPanel();
-        logoCanvas = new java.awt.Canvas();
 
         keyStoreFileButton.setText("Choisir");
 
@@ -204,7 +200,7 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
 
         signatureToolsLabel.setText("Fichier de données :");
 
-        dataFileButton.setLabel("Choisir");
+        dataFileButton.setText("Choisir");
 
         dataFileLabel.setFont(new java.awt.Font("Dialog", 2, 12)); // NOI18N
 
@@ -330,20 +326,6 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
                                         .addComponent(buildSignPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
-        javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
-        headerPanel.setLayout(headerPanelLayout);
-        headerPanelLayout.setHorizontalGroup(
-                headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(headerPanelLayout.createSequentialGroup()
-                                .addGap(316, 316, 316)
-                                .addComponent(logoCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        headerPanelLayout.setVerticalGroup(
-                headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(logoCanvas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -351,12 +333,10 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
                         .addComponent(keyStorePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(distinguishedPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(signatureToolsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(headerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(keyStorePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

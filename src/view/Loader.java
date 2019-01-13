@@ -12,20 +12,19 @@ public class Loader extends javax.swing.JFrame {
 
     public Loader() {
         initComponents();
-        loadPicture();
         setVisible(true);
         setResizable(false);
         setLocationRelativeTo(null);
     }
 
-    private void loadPicture() {
 
-    }
 
     private void initComponents() {
 
-        canvas = new java.awt.Canvas();
+        canvas = new LogoImage(PICTURE_WIDTH, PICTURE_HEIGHT);
+
         canvas.setSize(PICTURE_WIDTH, PICTURE_HEIGHT);
+        canvas.setVisible(true);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
