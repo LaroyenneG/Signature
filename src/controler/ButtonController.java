@@ -55,9 +55,9 @@ public class ButtonController extends AbstractController implements ActionListen
             } // encoder exception
 
             if (result) {
-                JOptionPane.showMessageDialog(viewer, "La signature est correct");
+                showSuccessMessage("La signature est correct");
             } else {
-                JOptionPane.showMessageDialog(viewer, "La signature est incorrect", "", JOptionPane.ERROR_MESSAGE);
+                showErrorMessage("La signature est incorrect");
             }
 
         } else {

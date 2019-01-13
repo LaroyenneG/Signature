@@ -7,6 +7,7 @@ public class ControlGroup {
 
     public ControlGroup(Model model, SignatureToolsViewerPanel viewer) {
         viewer.setActionListener(new ButtonController(model, viewer));
-        viewer.setItemListener(new ComboBoxController(model, viewer));
+        viewer.setItemListenerComboBoxDN(new DNComboBoxController(model, viewer));
+        viewer.setItemListenerComboBoxPrivateKey(new PrivateKeyComboBoxController(model, viewer));
     }
 }

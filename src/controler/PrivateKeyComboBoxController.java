@@ -6,9 +6,9 @@ import view.SignatureToolsViewerPanel;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-public class ComboBoxController extends AbstractController implements ItemListener {
+public class PrivateKeyComboBoxController extends AbstractController implements ItemListener {
 
-    public ComboBoxController(Model model, SignatureToolsViewerPanel viewer) {
+    public PrivateKeyComboBoxController(Model model, SignatureToolsViewerPanel viewer) {
         super(model, viewer);
     }
 
@@ -17,7 +17,6 @@ public class ComboBoxController extends AbstractController implements ItemListen
 
         if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
             model.setPrivateKey(viewer.getPrivateKeyItemSelect());
-            model.setDns(viewer.getDnItemSelect());
         }
     }
 }

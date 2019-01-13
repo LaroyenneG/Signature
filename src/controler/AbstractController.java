@@ -28,7 +28,7 @@ public abstract class AbstractController {
     }
 
     protected void showSuccessMessage(String text) {
-        JOptionPane.showMessageDialog(viewer, text, "Error", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(viewer, text, "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
     protected boolean loadAllDN() {
@@ -59,6 +59,8 @@ public abstract class AbstractController {
 
             if (!keys.isEmpty()) {
                 model.setPrivateKey(0);
+            } else {
+                model.setPrivateKey(-1);
             }
 
             viewer.displayPrivateKeys(keys);

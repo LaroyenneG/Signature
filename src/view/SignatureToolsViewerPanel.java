@@ -1,6 +1,7 @@
 
 package view;
 
+import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  */
 public class SignatureToolsViewerPanel extends javax.swing.JPanel {
 
+    private static final String SPACE_BLOCK = "               ";
     public static final String BUTTON_GENERATE_NAME = "generate";
     public static final String BUTTON_VERIFY_NAME = "verify";
     public static final String BUTTON_SELECT_DATA_FILE_NAME = "data file";
@@ -56,8 +58,11 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
         keyStoreFileButton.addActionListener(actionListener);
     }
 
-    public void setItemListener(ItemListener itemListener) {
+    public void setItemListenerComboBoxDN(ItemListener itemListener) {
         distinguishedComboBox.addItemListener(itemListener);
+    }
+
+    public void setItemListenerComboBoxPrivateKey(ItemListener itemListener) {
         privateKeyComboBox.addItemListener(itemListener);
     }
 
@@ -71,23 +76,41 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
 
     public void displayPrivateKeys(List<String> keys) {
 
-        privateKeyComboBox.removeAllItems();
+        updateComboBoxIfNotEquals(keys, privateKeyComboBox);
+    }
 
-        for (String key : keys) {
-            privateKeyComboBox.addItem(key);
+    private void updateComboBoxIfNotEquals(List<String> values, JComboBox<String> stringJComboBox) {
+        boolean equals = values.size() != stringJComboBox.getItemCount();
+
+        if (equals) {
+            for (int i = 0; i < values.size(); i++) {
+                if (!values.get(i).equals(stringJComboBox.getItemAt(i))) {
+                    equals = false;
+                    break;
+                }
+            }
+        }
+
+        if (!equals) {
+
+            stringJComboBox.removeAllItems();
+
+            for (String key : values) {
+                stringJComboBox.addItem(key);
+            }
         }
     }
 
     public void displayDNs(List<String> dns) {
 
-        distinguishedComboBox.removeAllItems();
-
-        for (String dn : dns) {
-            distinguishedComboBox.addItem(dn);
-        }
+        updateComboBoxIfNotEquals(dns, distinguishedComboBox);
     }
 
     public int getPrivateKeyItemSelect() {
+
+        if (privateKeyComboBox.getItemCount() <= 0) {
+            return -1;
+        }
 
         return privateKeyComboBox.getSelectedIndex();
     }
@@ -96,16 +119,16 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
 
         int i = distinguishedComboBox.getSelectedIndex();
 
-        if (i >= 0) {
-            return distinguishedComboBox.getItemAt(distinguishedComboBox.getSelectedIndex());
+        if (distinguishedComboBox.getItemCount() <= 0) {
+            return "";
         }
 
-        return "";
+        return distinguishedComboBox.getItemAt(distinguishedComboBox.getSelectedIndex());
     }
 
 
     public void displayKeyStoreFilePath(String path) {
-        keyStoreFilePath.setText("               " + path);
+        keyStoreFilePath.setText(SPACE_BLOCK + path);
     }
 
     public void displayDataFilePath(String path) {
@@ -274,7 +297,7 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
                                 .addContainerGap())
         );
 
-        privateKeyLabel.setText("Clé privé :");
+        privateKeyLabel.setText("Clé privée :");
 
         javax.swing.GroupLayout privateKeyPanelLayout = new javax.swing.GroupLayout(privateKeyPanel);
         privateKeyPanel.setLayout(privateKeyPanelLayout);
