@@ -11,7 +11,6 @@ import java.util.List;
  */
 public class SignatureToolsViewerPanel extends javax.swing.JPanel {
 
-    private static final String SPACE_BLOCK = "               ";
     public static final String BUTTON_GENERATE_NAME = "generate";
     public static final String BUTTON_VERIFY_NAME = "verify";
     public static final String BUTTON_SELECT_DATA_FILE_NAME = "data file";
@@ -368,4 +367,6 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
                                 .addContainerGap())
         );
     }
+
+    private static final String SPACE_BLOCK = "               ";
 }
