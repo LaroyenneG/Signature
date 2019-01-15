@@ -56,13 +56,13 @@ public class ButtonController extends AbstractController implements ActionListen
             } // encoder exception
 
             if (result) {
-                showSuccessMessage("La signature est correct");
+                showSuccessMessage("La signature est correcte");
             } else {
-                showErrorMessage("La signature est incorrect");
+                showErrorMessage("La signature est incorrecte");
             }
 
         } else {
-            showErrorMessage("Pour verifier une signature vous devez selectionner un keystore,\nun fichier de données et une signature");
+            showErrorMessage("Pour vérifier une signature vous devez sélectionner un keystore,\nun fichier de données et une signature");
         }
     }
 
@@ -75,7 +75,7 @@ public class ButtonController extends AbstractController implements ActionListen
             viewer.displaySignature(Base64.getEncoder().encodeToString(signature));
 
         } else {
-            showErrorMessage("Pour générer une signature vous devez selectionner un keystore et un fichier de données");
+            showErrorMessage("Pour générer une signature vous devez sélectionner un keystore et un fichier de données");
         }
     }
 
