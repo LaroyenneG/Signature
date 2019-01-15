@@ -75,7 +75,7 @@ public class ButtonController extends AbstractController implements ActionListen
             viewer.displaySignature(Base64.getEncoder().encodeToString(signature));
 
         } else {
-            showErrorMessage("Pour générer une signature vous devez sélectionner un keystore, une clé privée et un fichier de données");
+            showErrorMessage("Pour générer une signature vous devez sélectionner un keystore,\n une clé privée et un fichier de données");
         }
     }
 
