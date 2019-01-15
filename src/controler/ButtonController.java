@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Base64;
 
 public class ButtonController extends AbstractController implements ActionListener {
@@ -90,6 +91,14 @@ public class ButtonController extends AbstractController implements ActionListen
 
             if (status == JOptionPane.OK_OPTION) {
 
+                // clean interface
+                model.setKeyStoreFilePath("");
+                model.setPassword("");
+                viewer.displayDNs(new ArrayList<>());
+                model.setPrivateKey(-1);
+                viewer.displayKeyStoreFilePath("");
+                viewer.displayPrivateKeys(new ArrayList<>());
+
                 String password = new String(passwordField.getPassword());
 
                 model.setKeyStoreFilePath(filePathKS);
@@ -97,9 +106,6 @@ public class ButtonController extends AbstractController implements ActionListen
 
                 if (loadAllDN()) {
                     viewer.displayKeyStoreFilePath((new File(filePathKS).getName()));
-                } else {
-                    model.setKeyStoreFilePath("");
-                    model.setPassword("");
                 }
             }
         }

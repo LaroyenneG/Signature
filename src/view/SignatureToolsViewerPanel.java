@@ -215,7 +215,7 @@ public class SignatureToolsViewerPanel extends javax.swing.JPanel {
                                 .addComponent(distinguishedComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        distinguishedLabel.getAccessibleContext().setAccessibleName("Choisi");
+        distinguishedLabel.getAccessibleContext().setAccessibleName("Choisir");
 
         signatureTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 

@@ -35,8 +35,14 @@ public abstract class AbstractController {
         try {
             List<String> strings = model.findAllDN();
             viewer.displayDNs(strings);
-            model.setDns(strings.get(0));
-            loadAllInformationByDN();
+            model.setPrivateKey(-1);
+            viewer.displayPrivateKeys(new ArrayList<>());
+            if (!strings.isEmpty()) {
+                model.setDns(strings.get(0));
+                loadAllInformationByDN();
+            } else {
+                model.setDns("");
+            }
             return true;
         } catch (Exception e) {
             showErrorMessageException(e);
