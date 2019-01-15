@@ -14,31 +14,71 @@ import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
+/**
+ * This class is a toolbox for manage files signatures with those algorithms :
+ * <ul>
+ * <li>SHA256withDSA</li>
+ * <li>SHA256withECDSA</li>
+ * <li>SHA256withRSA</li>
+ * </ul>
+ */
 public class SignatureTools {
 
-    /*******************************************************************************************************************
-     * Constants
-     *******************************************************************************************************************/
+
+    /**
+     * Constant String which contains JCEKS
+     */
     protected static final String TYPE = "JCEKS";
 
-    /*
-     * Signature algorithm
+    /**
+     * Constant String which contains SHA256withDSA
      */
     private static final String SHA256_WITH_DSA = "SHA256withDSA";
+    /**
+     * Constant String which contains SHA256withECDSA
+     */
     private static final String SHA256_WITH_ECDSA = "SHA256withECDSA";
+    /**
+     * Constant String which contains SHA256withRSA
+     */
     private static final String SHA256_WITH_RSA = "SHA256withRSA";
 
-    /*
-     * Key algorithm
+    /**
+     * Constant String which contains RSA
      */
     private static final String RSA_ALGORITHM = "RSA";
+    /**
+     * Constant String which contains DSA
+     */
     private static final String DSA_ALGORITHM = "DSA";
+    /**
+     * Constant String which contains EC
+     */
     private static final String EC_ALGORITHM = "EC";
 
 
+    /**
+     * This parameters contains all public keys in the keystore
+     */
     private List<PublicKey> publicKeys;
+
+    /**
+     * This parameters contains all private keys in the keystore
+     */
     private List<PrivateKey> privateKeys;
 
+    /**
+     * @param filePath          keystore's file path
+     * @param password          keystore's password
+     * @param type              keystore's type
+     * @param distinguishedName the distinguished name which represent a person
+     * @throws CertificateException
+     * @throws NoSuchAlgorithmException
+     * @throws KeyStoreException
+     * @throws IOException
+     * @throws UnrecoverableKeyException
+     */
     public SignatureTools(String filePath, char[] password, String type, String distinguishedName) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, UnrecoverableKeyException {
 
         publicKeys = new ArrayList<>();
@@ -48,6 +88,19 @@ public class SignatureTools {
         loadPrivateKeys(new File(filePath), password, type, distinguishedName);
     }
 
+
+    /**
+     * This function return the list of all distinguished names contained in a keystore file
+     *
+     * @param filePath keystore's file path
+     * @param password keystore's password
+     * @param type     keystore's type
+     * @return The list of distinguished names contained in the keystore file
+     * @throws IOException
+     * @throws KeyStoreException
+     * @throws CertificateException
+     * @throws NoSuchAlgorithmException
+     */
     public static List<String> getAllDNList(String filePath, char[] password, String type) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
 
         List<String> listDN = new ArrayList<>();
@@ -76,6 +129,17 @@ public class SignatureTools {
         return listDN;
     }
 
+    /**
+     * This function build and return a signature file with private key
+     *
+     * @param filePath   data's file path
+     * @param privateKey the private key of the signatory user
+     * @return signature
+     * @throws IOException
+     * @throws SignatureException
+     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException
+     */
     public byte[] generateSignature(String filePath, PrivateKey privateKey) throws IOException, SignatureException, InvalidKeyException, NoSuchAlgorithmException {
 
         BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(filePath));
@@ -111,9 +175,20 @@ public class SignatureTools {
         return sign.sign();
     }
 
-    private void loadPublicKeys(File file, char[] password, String type, String distinguishedName) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
+    /**
+     * This function build all of the public keys contained in the keystore
+     * @param keystoreFile      keystore's file path
+     * @param password          keystore's password
+     * @param type              keystore's type
+     * @param distinguishedName the distinguished name which represent a person
+     * @throws IOException
+     * @throws KeyStoreException
+     * @throws CertificateException
+     * @throws NoSuchAlgorithmException
+     */
+    private void loadPublicKeys(File keystoreFile, char[] password, String type, String distinguishedName) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
 
-        FileInputStream fileInputStream = new FileInputStream(file);
+        FileInputStream fileInputStream = new FileInputStream(keystoreFile);
 
         KeyStore keyStore = KeyStore.getInstance(type);
 
@@ -142,14 +217,29 @@ public class SignatureTools {
     }
 
 
+    /**
+     * This function return the list of instance's private keys
+     * @return
+     * List of instance's private keys
+     */
     List<PrivateKey> getPrivateKeys() {
         return privateKeys;
     }
 
+    /**
+     * This function return the list of instance's public keys
+     * @return
+     * List of instance's public keys
+     */
     public List<PublicKey> getPublicKeys() {
         return publicKeys;
     }
 
+    /**
+     * This function return a string which represent instance's attributes
+     * @return
+     * A string which represent instance's attributes
+     */
     @Override
     public String toString() {
 
@@ -163,6 +253,19 @@ public class SignatureTools {
         return new String(stringBuilder);
     }
 
+    /**
+     * This function return true if the signature file match with a public key else this function return false
+     * @param fileName
+     * data's file path
+     * @param signature
+     * signature to check
+     * @return
+     * if the signature file match with a public key
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws SignatureException
+     * @throws IOException
+     */
     public boolean verify(String fileName, byte[] signature) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
 
         BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(fileName));
@@ -173,29 +276,29 @@ public class SignatureTools {
 
         for (PublicKey publicKey : publicKeys) {
 
-                Signature sign = null;
+            Signature sign = null;
 
-                switch (publicKey.getAlgorithm()) {
+            switch (publicKey.getAlgorithm()) {
 
-                    case DSA_ALGORITHM:
-                        sign = Signature.getInstance(SHA256_WITH_DSA);
-                        break;
+                case DSA_ALGORITHM:
+                    sign = Signature.getInstance(SHA256_WITH_DSA);
+                    break;
 
-                    case EC_ALGORITHM:
-                        sign = Signature.getInstance(SHA256_WITH_ECDSA);
-                        break;
+                case EC_ALGORITHM:
+                    sign = Signature.getInstance(SHA256_WITH_ECDSA);
+                    break;
 
-                    case RSA_ALGORITHM:
-                        sign = Signature.getInstance(SHA256_WITH_RSA);
-                        break;
+                case RSA_ALGORITHM:
+                    sign = Signature.getInstance(SHA256_WITH_RSA);
+                    break;
 
-                    default:
-                        System.err.println("Unknown algorithm :" + publicKey.getAlgorithm());
-                        return false;
-                }
+                default:
+                    System.err.println("Unknown algorithm :" + publicKey.getAlgorithm());
+                    return false;
+            }
 
-                sign.initVerify(publicKey);
-                sign.update(data);
+            sign.initVerify(publicKey);
+            sign.update(data);
 
             try {
                 if (sign.verify(signature)) {
@@ -207,9 +310,21 @@ public class SignatureTools {
         return false;
     }
 
-    private void loadPrivateKeys(File file, char[] password, String type, String distinguishedName) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
+    /**
+     * This function build all of the private keys contained in the keystore
+     * @param keystoreFile      keystore's file path
+     * @param password          keystore's password
+     * @param type              keystore's type
+     * @param distinguishedName the distinguished name which represent a person
+     * @throws IOException
+     * @throws KeyStoreException
+     * @throws CertificateException
+     * @throws NoSuchAlgorithmException
+     * @throws UnrecoverableKeyException
+     */
+    private void loadPrivateKeys(File keystoreFile, char[] password, String type, String distinguishedName) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
 
-        FileInputStream fileInputStream = new FileInputStream(file);
+        FileInputStream fileInputStream = new FileInputStream(keystoreFile);
 
         KeyStore keyStore = KeyStore.getInstance(type);
 
